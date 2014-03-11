@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+<!-- 
+
+DROP TABLE `hyundai_release_car`;
+
+CREATE TABLE `hyundai_release_car` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
+  `sells_channel` varchar(255) DEFAULT NULL COMMENT '판매채널',
+  `brand` varchar(255) DEFAULT NULL COMMENT '브랜드',
+  `terminal` varchar(255) DEFAULT NULL COMMENT '단말기',
+  `area1` varchar(255) DEFAULT NULL COMMENT '사업실',
+  `area2` varchar(255) DEFAULT NULL COMMENT '지점',
+  `model` varchar(255) DEFAULT NULL COMMENT '차종',
+  `year` varchar(255) DEFAULT NULL COMMENT '년도',
+  `quarter` varchar(255) DEFAULT NULL COMMENT '분기',
+  `month` varchar(255) DEFAULT NULL COMMENT '월',
+  `day` varchar(255) DEFAULT NULL COMMENT '요일',
+  `sells_cnt` int(11) DEFAULT NULL COMMENT '판매대수',
+  `release_date` int(11) DEFAULT NULL COMMENT '출고소요일',
+  `phone_used` int(11) DEFAULT NULL COMMENT '스마트폰사용',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+ -->
+    <dataMaster tableViewName="hyundai_release_car" 
+                mainTitle="차량 출고 현황 (Released Analysis)">
+        <FIELDS>
+            <field id="root_tmp"        tagName="root_tmp"        headerText="전체"       dataType="string"    />
+            <field id="sells_channel"   tagName="sells_channel"   headerText="판매채널"   dataType="string"    />
+            <field id="brand"           tagName="brand"           headerText="브랜드"     dataType="string"    />
+            <field id="terminal"        tagName="terminal"        headerText="단말기"     dataType="string"    />
+            <field id="area1"           tagName="area1"           headerText="사업실"     dataType="string"    />
+            <field id="area2"           tagName="area2"           headerText="지점"       dataType="string"    />
+            <field id="model"           tagName="model"           headerText="차종"       dataType="string"    />
+            <field id="year"            tagName="year"            headerText="년도"       dataType="string"    />
+            <field id="quarter"         tagName="quarter"         headerText="분기"       dataType="string"    />
+            <field id="month"           tagName="month"           headerText="월"         dataType="string"    />
+            <field id="day"             tagName="day"             headerText="요일"       dataType="string"    />
+            <field id="sells_cnt"       tagName="sells_cnt"       headerText="판매대수"    dataType="number"    unitDisp="대" />
+            <field id="release_date"    tagName="release_date"    headerText="출고소요일"  dataType="number"    unitDisp="일" />
+            <field id="phone_used"      tagName="phone_used"      headerText="스마트폰사용" dataType="number"   unitDisp="건" />
+        </FIELDS>
+    </dataMaster>
+    
+    <listMaster>
+        <GROUPPINGS>
+            <group fieldId="root_tmp"/>
+            <group fieldId="sells_channel"/>
+            <group fieldId="model"    parentFieldId="sells_channel"/>
+            <group fieldId="brand"/>
+            <group fieldId="terminal"/>
+            <group fieldId="area1"/>
+            <group fieldId="area2"    parentFieldId="area1"/>
+            <group fieldId="year"/>
+            <group fieldId="quarter"/>
+            <group fieldId="month"/>
+            <group fieldId="day"/>
+        </GROUPPINGS>
+        <ITEMS>
+            <item fieldId="sells_cnt"    summaryFunc="SUM"/>
+            <item fieldId="release_date" summaryFunc="SUM"/>
+            <item fieldId="phone_used"   summaryFunc="SUM"/>
+        </ITEMS>
+    </listMaster>
+
+</root>

@@ -1,0 +1,14 @@
+--Table INFO
+select * from all_constraints
+where owner='owner';
+
+-- Table COMMENTS
+select * from user_tab_comments;
+
+
+--TABLE + COLUMN INFO
+select * from all_cons_columns
+where owner='owner';
+
+--COLUMN COMMENTS
+select * from user_col_comments;

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<title>Third EyE</title>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	
+	<script src="//code.jquery.com/jquery.js"></script>
+	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+	
+	<link rel="stylesheet" href="js/xcharts-build/xcharts.css">
+	<link rel="stylesheet" href="js/xcharts-build/xcharts.add.css">
+	
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="js/xcharts-build/xcharts.js" charset="utf-8"></script>
+	
+	<script src="js/Chart.js-master/Chart.min.js" charset="utf-8"></script>
+	
+	<script src="js/google.analytics.www.bullnabi.com.js"></script>
+	
+</head>
+<body>
+	
+	
+	<script type="text/javascript">
+		
+		/** businessCode */
+		var businessCode = null;
+		
+		/** chart instance */
+		var myChart, myPie1, myPie2 = null;
+		
+		/** tooltip, selectTool, mouse control offset */
+		var chartTooltip = null;
+		var selectTool = null;
+		var leftOffset, topOffset = null;
+		
+		/** history selected data during drill down */ 
+		var selectedDataHistory = null;
+		var selectedData = null;
+		
+		/** selectTool items */
+		var groupingTargets = null;
+		
+		/** grouping field history */
+		var groupingFieldHistory = null;
+		/** current grouping field */
+		var currentGroupingField = null;
+		
+		
+		/**
+		 *	jQuery onReady
+		 */
+		$(document).ready(function(){
+			
+			businessCode = getBusinessCode();
+			if( businessCode == null || businessCode == "" ){
+				alert("can't get business parameter");
+				return;
+			}
+			
+			initChartHideComponent();
+			
+			getMetadata( parseMetadata );
+		});
+		
+		/**
+		 *	Init Chart Tooltip
+		 *	Init Chart Select Tool
+		 */
+		function initChartHideComponent(){
+			
+			chartTooltip = document.createElement('div');
+			leftOffset = -(~~$('html').css('padding-left').replace('px', '') + ~~$('body').css('margin-left').replace('px', ''));
+			topOffset = -32;
+			chartTooltip.className = 'ex-tooltip';
+			document.body.appendChild(chartTooltip);
+			
+			selectTool = document.createElement('div');
+			leftOffset = -(~~$('html').css('padding-left').replace('px', '') + ~~$('body').css('margin-left').replace('px', ''));
+			selectTool.className = 'ex-selectTool';
+			document.body.appendChild(selectTool);
+			
+			$(selectTool).mouseleave(function(x) {
+				$(selectTool).hide();
+			});
+		}
+		
+		/**
+		 *	Get Metadata
+		 */
+		function getMetadata(callbackFunc){
+
+			$.ajax({
+				type : "GET",
+				url : "thirdEye/getMetadata.do?businessCode="+businessCode,
+				dataType : "json",
+				data : {},
+				success : function(ajaxResponse) {
+					//alert(ajaxResponse);
+					callbackFunc.call(this, ajaxResponse);
+				},
+				error : function(request, status, error) {
+					alert("code : " + request.status + "\r\nmessage : "
+							+ request.reponseText);
+				}
+			});
+		}
+		
+		/**
+		 *	Parse Metadata
+		 */
+		function parseMetadata( metadataSource ){
+			
+			groupingTargets = [];
+			
+			var firstItemVo = null; /* 첫번째 ITEM */
+			
+			var xmlDoc = $.parseXML( metadataSource ),
+		    $xml = $( xmlDoc ),
+		    $group = $xml.find( "group" ),	/* group 항목 */
+			$item = $xml.find( "item" );	/* item 항목 */
+			
+			$("#mainTitle").text( $xml.find( "dataMaster" )[0].getAttribute("mainTitle") );
+			
+			$group.each(function (index){
+				
+				var itemVo = {
+						tagName : $(this)[0].getAttribute("tagName"),
+						headerText : $(this)[0].getAttribute("headerText"),
+						summaryFunc : $(this)[0].getAttribute("summaryFunc"),
+						parentFieldId : $(this)[0].getAttribute("parentFieldId"),
+						unitDisp : $(this)[0].getAttribute("unitDisp")
+				};
+				
+				if( index == 0 ){
+					firstItemVo = itemVo;
+				}
+				
+				groupingTargets.push( itemVo );
+				var $targetGroup = $( document.createElement( "button" ) )
+								.attr("id", "targetGroup_"+itemVo.tagName)
+								.attr("type", "button")
+								.attr("class", "btn btn-primary")
+								.on("click", function(){
+									onClickGroup( itemVo );	
+								})
+								.append(
+									'<strong>'+itemVo.headerText+'</strong>'+
+									'<span class="text-warning">별로 보기</span>'
+								);
+				
+				$(selectTool).append( $targetGroup.add('<br/>') );
+			});
+			
+			$item.each(function (index){
+				
+				var itemVo = {
+						tagName : $(this)[0].getAttribute("tagName"),
+						headerText : $(this)[0].getAttribute("headerText"),
+						summaryFunc : $(this)[0].getAttribute("summaryFunc"),
+						parentFieldId : $(this)[0].getAttribute("parentFieldId"),
+						unitDisp : $(this)[0].getAttribute("unitDisp")
+				};
+
+				var $target1Item = $( '<li><a href="javascript:onChangeItem(1,\''+itemVo.tagName+'\',\''+itemVo.headerText+'\',\''+itemVo.summaryFunc+'\',\''+itemVo.parentFieldId+'\',\''+itemVo.unitDisp+'\')">'+itemVo.headerText+'</a></li>' );
+				$('#sectCombo1Menu').append( $target1Item );
+				if(index==0){
+					$("#sectCombo1Label").text(itemVo.headerText);
+					$("#sectCombo1Label").val(itemVo);
+					$("#piePanelHeader1").text( $("#sectCombo1Label").text() + " 비율" );
+				}
+				
+				var $target2Item = $( '<li><a href="javascript:onChangeItem(2,\''+itemVo.tagName+'\',\''+itemVo.headerText+'\',\''+itemVo.summaryFunc+'\',\''+itemVo.parentFieldId+'\',\''+itemVo.unitDisp+'\')">'+itemVo.headerText+'</a></li>' );
+				$('#sectCombo2Menu').append( $target2Item );
+				if(index==1){
+					$("#sectCombo2Label").text(itemVo.headerText);
+					$("#sectCombo2Label").val(itemVo);
+					$("#piePanelHeader2").text( $("#sectCombo2Label").text() + " 비율" );
+				}
+			});
+			
+			initChart();
+			
+			// 최초 아이템 클릭 이벤트 강제 실행
+			onClickGroup( firstItemVo );
+		}
+		
+		/**
+		 *	Draw Chart
+		 */
+		function initChart(){
+			
+			var data = {
+				"xScale" : "ordinal",	//ordinal, linear, time, exponential
+				"yScale" : "linear",	//ordinal, linear, time, exponential
+				"type" : "bar",			//bar, cumulative, line, line-dotted
+				"main" : [ 
+					{
+						"className" : ".pizza",
+						"data" : [ 
+							{ "x" : "A", "y" : 6 }, 
+							{ "x" : "B", "y" : 6 }, 
+							{ "x" : "C", "y" : 8 }, 
+							{ "x" : "D", "y" : 3 }, 
+							{ "x" : "E", "y" : 4 }, 
+							{ "x" : "F", "y" : 9 }, 
+							{ "x" : "G", "y" : 6 } 
+						]
+					}
+				],
+				"comp" : [ 
+					{
+						"type": "line-dotted",
+						"className" : ".foo",
+						"data" : [ 
+							{ "x" : "A", "y" : 8 }, 
+							{ "x" : "B", "y" : 3 }, 
+							{ "x" : "C", "y" : 2 }, 
+							{ "x" : "D", "y" : 4 }, 
+							{ "x" : "E", "y" : 5 }, 
+							{ "x" : "F", "y" : 9 }, 
+							{ "x" : "G", "y" : 3 } 
+						]
+					}
+				]
+			};
+			
+			var opts = {
+				"axisPaddingTop" : 5,
+// 				"dataFormatX" : function(x) {
+// 					return d3.time.format('%Y-%m-%d').parse(x);
+// 				},
+// 				"tickFormatX" : function(x) {
+// 					return d3.time.format('%A')(x);
+// 				},
+				"tickFormatY" : function(y) {
+					//alert(y);
+					return d3.format(',')(y);
+				},
+				"click" : function(d, i) {
+					
+					selectedData = d;
+					
+					var pos = $(this).offset();
+					$(selectTool)
+						//.text(d.x + ': ' + d.y)
+						.css({
+							top : topOffset + pos.top,
+							left : pos.left + leftOffset
+						})
+						.show();
+				},
+				"mouseover" : function(d, i) {
+					
+					/**
+					 *	itemVo
+					 *		tagName
+					 *		headerText
+					 *		summaryFunc
+					 *		parentFieldId
+					 *		unitDisp
+					 */
+					var itemVo = d.itemVo;
+					
+					if( itemVo == null ){
+						return;
+					}
+					
+					var pos = $(this).offset();
+					$(chartTooltip)
+						.html( d.x + ' <span class="text-warning">' + itemVo.summaryFunc + '</span>: ' + d3.format(",")(d.y) + ' <span class="text-warning">' + itemVo.unitDisp + '</span>' )
+						.css({
+							top : topOffset + pos.top,
+							left : pos.left + leftOffset
+						})
+						.show();
+				},
+				"mouseout" : function(x) {
+					$(chartTooltip).hide();
+				}
+			};
+			
+			myChart = new xChart('bar', data, '#chart-standard', opts);
+			
+		}
+
+		/**
+		 *	분석 Group 선택 시
+		 */
+		function onClickGroup( itemVo ){
+			
+			/**
+			 *	itemVo
+			 *		tagName
+			 *		headerText
+			 *		summaryFunc
+			 *		parentFieldId
+			 *		unitDisp
+			 */
+			
+			if( groupingFieldHistory == null ){
+				groupingFieldHistory = [];
+			}
+			if( selectedDataHistory == null ){
+				selectedDataHistory = [];
+			}
+			
+			preItemVo = null;
+			if( groupingFieldHistory.length > 0 ){
+				preItemVo = groupingFieldHistory[groupingFieldHistory.length-1];
+			}
+			groupingFieldHistory.push( itemVo );
+			selectedDataHistory.push( selectedData );
+			addGroupingHistory( itemVo, preItemVo, selectedData );
+			
+			doSearch( itemVo.tagName );
+		}
+		
+		/**
+		 *	분석 Group History 추가
+		 */
+		function addGroupingHistory( itemVo, preItemVo, _selectedData ){
+			
+			var $historyDisp = $( document.createElement( "button" ) )
+							//.attr("id", "historyGroup_"+itemVo.tagName)
+							.attr("type", "button")
+							.attr("class", "btn btn-link")
+							.on("click", function(){
+								onClickGroupHistory( itemVo );	
+							})
+							.append(
+								'<span class="text-warning">&gt;&nbsp;</span>'
+							)
+							.append(
+								'<strong><span id="historyGroup_'+itemVo.tagName+'"></span></strong>'
+							)
+							.append(
+								'<span class="text-warning">'+itemVo.headerText+'</span>'+
+								''//'<span class="text-warning">별</span>'
+							);
+			
+			$('#historyInfo').append( $historyDisp );
+			
+			if( preItemVo != null ){
+				
+				$('#historyGroup_'+preItemVo.tagName).html( _selectedData.x + " " );
+			}
+		}
+		
+		/**
+		 *	Group History Click
+		 */
+		function onClickGroupHistory( itemVo ){
+			
+			var _newSelectedDataHistory = [];
+			var _selectedData;
+			
+			var _newGroupingFieldHistory = [];
+			var _groupingField;
+			for( var index in groupingFieldHistory ){
+				
+				_selectedData = selectedDataHistory[index];
+				_newSelectedDataHistory.push(_selectedData);
+				
+				_groupingField = groupingFieldHistory[index];
+				_newGroupingFieldHistory.push(_groupingField);
+				
+				if( _groupingField.tagName == itemVo.tagName ){
+					break;
+				}
+			}
+			selectedDataHistory = _newSelectedDataHistory;
+			groupingFieldHistory = _newGroupingFieldHistory;
+			
+			$('#historyInfo').html("");
+			for( var index in groupingFieldHistory ){
+				
+				_groupingField = groupingFieldHistory[index];
+				
+				var preItemVo = null;
+				if( groupingFieldHistory.length > 0 ){
+					preItemVo = groupingFieldHistory[index-1];
+				}
+				
+				addGroupingHistory( _groupingField, preItemVo, selectedDataHistory[index] );
+			}
+			
+			doSearch( _groupingField.tagName );
+		}
+		
+		/**
+		 *	분석항목 변경 시
+		 */
+		function onChangeItem( sectCombo, tagName, headerText, summaryFunc, parentFieldId, unitDisp ){
+			
+			var itemVo = {
+					tagName : tagName,
+					headerText : headerText,
+					summaryFunc : summaryFunc,
+					parentFieldId : parentFieldId,
+					unitDisp : unitDisp
+			};
+			
+			var $sectComboLabel = sectCombo == 1 ? $("#sectCombo1Label") : $("#sectCombo2Label");
+			$sectComboLabel.text(itemVo.headerText);
+			$sectComboLabel.val(itemVo);
+			
+			$("#piePanelHeader1").text( $("#sectCombo1Label").text() + " 비율" );
+			$("#piePanelHeader2").text( $("#sectCombo2Label").text() + " 비율" );
+			
+			doSearch("");
+		}
+		
+		/**
+		 *	Decide The Destiny Of TargetGroup
+		 */
+		function decideTheDestinyOfTargetGroup(){
+			
+			// select tool의 전체 targetGroup을 초기화
+			for(var index in groupingTargets){
+				
+				$("#targetGroup_"+groupingTargets[index].tagName).attr("disabled", false);
+				//$("#targetGroup_"+groupingTargets[index]).show();
+				
+				// parentFieldId 가 있으면 parentFieldId가 선택되지 않은 것들 비활성화
+				if( groupingTargets[index].parentFieldId != null ){
+					
+					var isIn = false;
+					for(var i in groupingFieldHistory){
+						if( groupingTargets[index].parentFieldId == groupingFieldHistory[i].tagName ){
+							isIn = true;
+							break;
+						}
+					}
+					if( !isIn ){
+						$("#targetGroup_"+groupingTargets[index].tagName).attr("disabled","disabled");
+						//$("#targetGroup_"+groupingFieldHistory[index].tagName).hide();
+					}
+				}
+			}
+			
+			// select tool의 이미 선택된 group 비활성화
+			for(var index in groupingFieldHistory){
+				$("#targetGroup_"+groupingFieldHistory[index].tagName).attr("disabled","disabled");
+				//$("#targetGroup_"+groupingFieldHistory[index].tagName).hide();
+			}
+			
+		}
+		
+		/**
+		 *	Request Data
+		 */
+		function doSearch( groupingField ){
+			
+			// 새로운 Grouping 조합일때
+			if(groupingField != ""){
+				
+				// 현재 Grouping Field 저장
+				currentGroupingField = groupingField;
+				
+				decideTheDestinyOfTargetGroup();
+			}
+			
+			var value1Field = $("#sectCombo1Label").val().tagName;
+			var value2Field = $("#sectCombo2Label").val().tagName;
+			
+			var params = {};
+			params.businessCode = businessCode;
+			params.groupingField = currentGroupingField;
+			params.value1Field = value1Field;
+			params.value2Field = value2Field;
+			
+			var historyNames = [];
+			var historyValues = [];
+			for( var i=1; i<groupingFieldHistory.length; i++ ){
+				
+				historyNames.push( groupingFieldHistory[i-1].tagName );
+				historyValues.push( selectedDataHistory[i].x );
+			}
+			
+			params.historyNames = historyNames.join("^");
+			params.historyValues = historyValues.join("^");
+			
+			$.ajax({
+				type : "POST",
+				url : "thirdEye/groupingList.do",
+				dataType : "json",
+				data : params,
+				success : function(ajaxResponse) {
+					
+					bindData( ajaxResponse );
+				},
+				error : function(request, status, error) {
+					alert("code : " + request.status + "\r\nmessage : "
+							+ request.reponseText);
+				}
+			});
+			
+			$(selectTool).hide();
+		}
+		
+		/**
+		 *	Response Data
+		 */
+		function bindData( originalDatas ){
+			
+			var mainDatas = [originalDatas.length];
+			var compDatas = [originalDatas.length];
+			
+			for(var index in originalDatas ){
+				
+				var originalData = originalDatas[index];
+				
+				var mainData = {};
+				mainData.x = originalData.category;
+				mainData.y = originalData.value1Field;
+				mainData.itemVo = $("#sectCombo1Label").val();
+				mainDatas[index] = mainData;
+				
+				var compData = {};
+				compData.x = originalData.category;
+				compData.y = originalData.value2Field;
+				compData.itemVo = $("#sectCombo2Label").val();
+				compDatas[index] = compData;
+			}
+			
+			var data = {
+				"xScale" : "ordinal",	//ordinal, linear, time, exponential
+				"yScale" : "linear",	//ordinal, linear, time, exponential
+				"type" : "bar",			//bar, cumulative, line, line-dotted
+				"main" : [ 
+					{
+						"className" : ".pizza",
+						"data" : mainDatas
+					}
+				],
+				"comp" : [ 
+					{
+						"type": "line-dotted",
+						"className" : ".foo",
+						"data" : compDatas
+					} 
+				]
+			};
+			
+			myChart.setData(data);
+			
+			var pieColors = ["#2080D0", "#FF80FF", "#C0E0FF", "#FFFF80", "#FF8080", "#FFC000", "#FF80FF", "#30C0FF", "#008000", "#FFC0C0"];
+			var pieData1 = [];
+			var pieData2 = [];
+			for(var index in originalDatas ){
+				
+				var originalData = originalDatas[index];
+				var data1 = {};
+				data1.value = originalData.value1Field;
+				data1.label = originalData.category;
+				data1.color = pieColors[index%pieColors.length];
+				pieData1.push(data1);
+				var data2 = {};
+				data2.value = originalData.value2Field;
+				data2.label = originalData.category;
+				data2.color = pieColors[index%pieColors.length];
+				pieData2.push(data2);
+			}
+			
+			myPie1 = new Chart( document.getElementById("chart-pie1").getContext("2d") ).Pie( pieData1 );
+			myPie2 = new Chart( document.getElementById("chart-pie2").getContext("2d") ).Pie( pieData2 );
+		}
+		
+		/**
+		 *	get business from parameter
+		 */
+		function getBusinessCode(){
+			
+			//전역에서 가져옴.
+			return global_getRequestParam("business");
+			//return getRequestParamOnJS("business");
+		}
+		
+		/**
+		 *	get parameter
+		 */
+		function getRequestParamOnJS(valuename){
+		    var rtnval = "";
+		    var nowAddress = unescape(location.href);
+		    var parameters = (nowAddress.slice(nowAddress.indexOf("?")+1,nowAddress.length)).split("&");
+		   
+		    for(var i = 0 ; i < parameters.length ; i++){
+		        var varName = parameters[i].split("=")[0];
+		        if(varName.toUpperCase() == valuename.toUpperCase()){
+		            rtnval = parameters[i].split("=")[1];
+		            break;
+		        }
+		    }
+		    return rtnval;
+		}
+		
+	</script>
+	
+	<div id="wrap">
+
+		<!-- Begin page content -->
+		<div class="container">
+						
+			<div class="page-header">
+				<h1 id="mainTitle">Drilldown Analysis Chart</h1>
+			</div>
+			
+			<div class="well" style="padding-bottom: 2px;">
+				
+				<span style="color: #3880aa; font-weight: bold;">분석항목A</span>
+				<div class="btn-group">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						<span id="sectCombo1Label" >Dropdown</span><span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" id="sectCombo1Menu">
+					</ul>
+				</div>
+				
+				<span style="color: #EFA640; font-weight: bold; margin-left: 20px;">분석항목B</span>
+				<div class="btn-group">
+					<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+						<span id="sectCombo2Label" >Dropdown</span><span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" id="sectCombo2Menu">
+					</ul>
+				</div>
+				
+				<button type="button" class="btn btn-primary" style="margin-left: 20px; visibility: hidden;" onclick="doSearch('root_tmp')">Search</button>
+				
+				<div id="historyInfo" style="width: 100%; background-color: #E5E5E5; margin-top: 10px;"></div>
+				
+			</div>
+
+			<div class="row" style="height: 500px;">
+				<div class="col-sm-8" style="height: 100%;">
+					<div class="panel panel-success" style="height: 100%;">
+						<div class="panel-heading">
+							<h3 class="panel-title">Chart standard</h3>
+						</div>
+						<div id="chart-standard" class="panel-body"
+							style="position: absolute; top: 60px; left: 40px; right: 40px; bottom: 40px;">
+							<!-- TODO 꽉 채우고 싶어, 가운데 정렬 -->
+						</div>
+					</div>
+				</div>
+				<!-- /.col-sm-4 -->
+				<div class="col-sm-4" style="height: 100%;">
+					<div class="panel panel-info"  style="height: 48%;">
+						<div class="panel-heading">
+							<span id="piePanelHeader1" class="label label-primary panel-title"></span>
+						</div>
+						<div class="panel-body" style="height: 100%;">
+							<canvas id="chart-pie1" style="width: 200; height: 200;"></canvas>
+						</div>
+					</div>
+					<div class="panel panel-info" style="height: 48%;">
+						<div class="panel-heading">
+							<span id="piePanelHeader2" class="label label-warning panel-title"></span>
+						</div>
+						<div class="panel-body" style="height: 100%;">
+							<canvas id="chart-pie2" style="width: 200; height: 200;"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div><!-- .container -->
+		
+	</div><!-- #wrap -->
+
+</body>
+</html>

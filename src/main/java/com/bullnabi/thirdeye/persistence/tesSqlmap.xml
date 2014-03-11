@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bullnabi.thiredeye.service.TestDao">
+
+  <insert id="insert" parameterType="string" >
+    INSERT INTO TEST_STR (STR) VALUES( #{str})
+  </insert>
+
+	<delete id="deleteAllData">
+		DELETE FROM TEST_STR
+	</delete>
+	
+	<select id="getList" resultType="java.util.Map">
+		SELECT str FROM TEST_STR
+	</select>
+</mapper>

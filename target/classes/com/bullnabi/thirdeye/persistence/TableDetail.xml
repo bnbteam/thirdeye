@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bullnabi.thirdeye.persistence.TableDetailDao">
+<!-- ORACLE 
+	<select id="getTableName" resultType="dataMap">
+		SELECT 
+			TABLE_NAME
+			, '('||SUBSTR(TABLE_TYPE, 0, 1)||')'||NVL(COMMENTS, TABLE_NAME) AS VIEW_TXT
+			, COMMENTS
+			, TABLE_TYPE 
+		FROM 
+			USER_TAB_COMMENTS
+	</select>
+	
+	<select id="getTableDetails" parameterType="String" resultType="dataMap">
+		SELECT 
+			ATC.COLUMN_NAME
+			, ATC.DATA_TYPE
+			, UCC.COMMENTS
+		FROM 
+			ALL_TAB_COLS ATC
+			, USER_COL_COMMENTS UCC
+		WHERE
+			ATC.TABLE_NAME = UCC.TABLE_NAME
+			AND ATC.TABLE_NAME=?
+			AND ATC.COLUMN_NAME = UCC.COLUMN_NAME
+	</select>
+	
+ORACLE -->
+
+	<select id="getTableName" resultType="dataMap">
+		SHOW TABLE STATUS 
+	</select>
+	
+	<select id="getTableDetails" parameterType="String" resultType="dataMap">
+		SHOW FULL COLUMNS FROM ${tableName}
+	</select>
+</mapper>

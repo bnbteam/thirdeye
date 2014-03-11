@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bullnabi.thirdeye.persistence.ThirdEyeMapper">
+
+	
+	<select id="groupingList" parameterType="thirdEye" resultType="dataMap">
+		SELECT
+			
+			<if test="groupingField == 'root_tmp'">
+				'ALL' as category
+			</if>
+			<if test="groupingField != 'root_tmp'">
+				${groupingField} as category
+			</if>
+			
+			<if test="value1Field != ''">
+				, sum(${value1Field}) as value1Field
+			</if>
+			<if test="value2Field != ''">
+				, sum(${value2Field}) as value2Field
+			</if>
+			
+			, count(*) as c_n_t
+		FROM ${tbName} targetTable
+		WHERE 1=1
+			${whereSearch}
+		<if test="groupingField != 'root_tmp'">
+			GROUP BY ${groupingField}
+			ORDER BY ${groupingField} asc
+		</if>
+  	</select>
+  	
+	<insert id="genSampleDataSells" parameterType="dataMap">
+		INSERT INTO tb_s_sells
+		(
+			ca_type_gb, 
+			loc_type_gb,
+			ca_inx_lgb, 
+			ca_nm,
+			bas_year,
+			bas_month,
+			gov_bz_lcd_nm,
+			gov_bz_mcd_nm,
+			sell_amt,
+			aprv_cnt,
+			sell_aprv,
+			sell_mcht,
+			open_cnt,
+			close_cnt
+		)
+		VALUES 
+		(
+			#{ca_type_gb}, 
+			#{loc_type_gb},
+			#{ca_inx_lgb}, 
+			#{ca_nm},
+			#{bas_year},
+			#{bas_month},
+			#{gov_bz_lcd_nm},
+			#{gov_bz_mcd_nm},
+			#{sell_amt},
+			#{aprv_cnt},
+			#{sell_aprv},
+			#{sell_mcht},
+			#{open_cnt},
+			#{close_cnt}
+		)
+  	</insert>
+  	
+	<insert id="genSampleDataReleaseCar" parameterType="dataMap">
+		INSERT INTO hyundai_release_car
+		(
+			sells_channel, 
+			brand,
+			terminal, 
+			area1, 
+			area2, 
+			model,
+			year,
+			quarter,
+			month,
+			day,
+			sells_cnt,
+			release_date,
+			phone_used
+		)
+		VALUES 
+		(
+			#{sells_channel}, 
+			#{brand},
+			#{terminal}, 
+			#{area1}, 
+			#{area2}, 
+			#{model},
+			#{year},
+			#{quarter},
+			#{month},
+			#{day},
+			#{sells_cnt},
+			#{release_date},
+			#{phone_used}
+		)
+  	</insert>
+
+</mapper>

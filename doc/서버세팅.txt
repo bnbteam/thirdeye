@@ -1,0 +1,62 @@
+
+필요 소스 모두 commit
+
+http://desktop.la..pe.kr 하면 바로 나오도록 세팅해주세요
+	port : 80
+	context root : /
+	was는 tomcat7로하면 되겠죠?
+	
+
+DB는 mysql로 설치 (한글 잘되는지 확인)
+
+	요기 코멘트 좀 달아서 만들어주세요.
+	(모르는 항목은 그냥 필드명 그대로)
+	
+	CREATE TABLE tb_s_sells (
+	  id int(11) NOT NULL AUTO_INCREMENT COMMENT  '순번',
+	  ca_type_gb varchar(20) DEFAULT NULL COMMENT  '상권유형',
+	  loc_type_gb varchar(20) DEFAULT NULL COMMENT  '입지유형',
+	  ca_inx_lgb varchar(20) DEFAULT NULL COMMENT  '상권지수지역구분',
+	  ca_nm varchar(20) DEFAULT NULL COMMENT  '상권',
+	  bas_year varchar(20) DEFAULT NULL COMMENT  '년도',
+	  bas_month varchar(20) DEFAULT NULL COMMENT  '월',
+	  gov_bz_lcd_nm varchar(20) DEFAULT NULL COMMENT  '업종대분류',
+	  gov_bz_mcd_nm varchar(20) DEFAULT NULL COMMENT  '업종중분류',
+	  sell_amt int(11) DEFAULT NULL COMMENT  '매출금액',
+	  aprv_cnt int(11) DEFAULT NULL COMMENT  '구매건수',
+	  sell_aprv int(11) DEFAULT NULL COMMENT  '객단가',
+	  sell_mcht int(11) DEFAULT NULL COMMENT  '점포당매출금액',
+	  open_cnt int(11) DEFAULT NULL COMMENT  '창업점포수',
+	  close_cnt int(11) DEFAULT NULL COMMENT  '폐업점포수',
+	  PRIMARY KEY (id)
+	) ENGINE=InnoDB AUTO_INCREMENT=1641 DEFAULT CHARSET=utf8;
+	
+	기타 있어보이는 이름으로 테이블 여러개 만들어주세요 (meta xml 만들때 table 고를 때 보여주려구요)
+	
+	tb_s_sells 데이터는 제가 넣을게요.
+	
+	코멘트는 이거 보고 달면 되겠어요.
+	<dataMaster tableViewName="tb_s_sells" mainTitle="매출분석 (Sale Analysis)">
+		<FIELDS>
+			<field id="root_tmp" 		tagName="root_tmp" 		headerText="전체" 			dataType="string"	/>
+			<field id="ca_type_gb"		tagName="ca_type_gb"	headerText="상권유형" 		dataType="string"	/>
+			<field id="loc_type_gb"		tagName="loc_type_gb"	headerText="입지유형" 		dataType="string"	/>
+			<field id="ca_inx_lgb"		tagName="ca_inx_lgb"	headerText="상권지수지역구분" dataType="string"	/>
+			<field id="ca_nm"			tagName="ca_nm"			headerText="상권"	 		dataType="string"	/>
+			<field id="bas_year"		tagName="bas_year"		headerText="년도" 			dataType="string"	/>
+			<field id="bas_month"		tagName="bas_month"		headerText="월" 				dataType="string"	/>
+			<field id="gov_bz_lcd_nm"	tagName="gov_bz_lcd_nm"	headerText="업종대분류" 		dataType="string"	/>
+			<field id="gov_bz_mcd_nm"	tagName="gov_bz_mcd_nm"	headerText="업종중분류" 		dataType="string"	/>
+			<field id="sell_amt"		tagName="sell_amt"		headerText="매출금액" 		dataType="number"	unitDisp="백만"	/>
+			<field id="aprv_cnt"		tagName="aprv_cnt"		headerText="구매건수" 		dataType="number"	unitDisp="천건"	/>
+			<field id="sell_aprv"		tagName="sell_aprv"		headerText="객단가" 			dataType="number"	unitDisp="천원"	/>
+			<field id="sell_mcht"		tagName="sell_mcht"		headerText="점포당 매출금액" 	dataType="number"	unitDisp="천원"	/>
+			<field id="open_cnt"		tagName="open_cnt"		headerText="창업점포수" 		dataType="number"	unitDisp="개"	/>
+			<field id="close_cnt"		tagName="close_cnt"		headerText="폐업점포수" 		dataType="number"	unitDisp="개"	/>
+		</FIELDS>
+	</dataMaster>
+
+다 세팅 되면
+	프로그램 변경 적용할 수 있도록 해주세요
+	ftp + ssh || 원격 || ant
+	

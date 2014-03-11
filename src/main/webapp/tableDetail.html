@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<title>Third EyE</title>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	
+	<script src="//code.jquery.com/jquery.js"></script>
+	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	
+	<script src="js/google.analytics.www.bullnabi.com.js"></script>
+	
+</head>
+<body>
+	
+	
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+			getTableInfo();
+			
+			
+			
+			   $("#fileName").keyup(function(event){
+                   if (!(event.keyCode >=37 && event.keyCode<=40)) {
+                       var inputVal = $(this).val();
+                       $(this).val(inputVal.replace(/[^a-z]/gi,''));    
+                   }
+               });
+		});
+		
+		function getTableInfo(){
+			$.ajax({
+				type:"GET",
+				url:"rest/tableInfo/",
+				dataType:"json",
+				data:{},
+				success: function(tableInfoData){
+					for(i=0; i<tableInfoData.length; i++){
+						var data = tableInfoData[i];
+						var $target1Item = $( '<li><a href="javascript:onChangeItem(\''+data.Name+'\')">'+data.Name+'</a></li>' );
+						$('#sectCombo1Menu').append( $target1Item );
+						
+						if(i==0){
+							//onChangeItem(data.Name);
+						}
+					}
+				},
+				error : function(request, status, error) {
+					alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
+				}
+			});
+		}
+		
+		function onChangeItem(tableName){
+			$("#sectCombo1Label").text(tableName);
+			$("#sectCombo1Label").val(tableName);
+			$("#tableName").val(tableName);
+			getTableDetail(tableName);
+		}
+		function getTableDetail(tableName){
+		
+			$.ajax({
+				type:"GET",
+				url:"rest/tableInfo/"+tableName,
+				dataType:"json",
+				success: makeTabeDetailProcess,
+				error : function(request, status, error) {
+					alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
+				}
+			});
+		}
+		
+		function makeTabeDetailProcess(tableDetails){
+		
+	
+			var allField = new Array();
+			for(i=0; i<tableDetails.length; i++){
+				var data = tableDetails[i];
+				allField.push(data.Field);
+			}
+			
+			var optionHtmlStr = "<option value=''></option>";
+			for(i=0; i<allField.length; i++){
+				optionHtmlStr +="<option>"+allField[i]+"</option>";
+			}
+			
+			
+			$('#tableDetailInfo tbody').empty();
+			 jQuery.each( tableDetails, function(i, data){
+				 $('#tableDetailInfo tbody').append($("<tr />").append('<td><div class="checkbox"><input type="checkbox" name="useYn" value="'+i+'"></div></td><td><input type="text" name="fieldName" class="form-control" placeholder="Field Name" readOnly="readOnly" value="'+data.Field+'"></td><td><input type="text" name="fieldTitle" class="form-control" placeholder="Field" value="'+data.Comment+'"></td><td><select class="form-control" name="dataType" ><option value="string">string</option><option value="number" '+((data.Type.indexOf("int") != -1)?"selected":"")+'>number</option></select></td><td><div class="checkbox"><input type="checkbox" value="'+data.Field+'" name="xAxis'+i+'"></div></td><td><select class="form-control" name="yAxis"><option></option><option>AVG</option><option>SUM</option><option>MIN</option><option>MAX</option></select></td><td><input type="text" name="unit" class="form-control" placeholder="Unit"></td><td><select class="form-control" name="necessaryField">'+optionHtmlStr+'</select></td>'));
+			 });
+			//for(i=0; i<tableDetails.length; i++){
+			//	var data = tableDetails[i];
+		
+				/*
+				<tr>
+								<td>
+									<div class="checkbox">
+									    <input type="checkbox" value="" name="useYn" value="'+data.Field+'">
+									</div>
+								</td>
+								<td>
+							      <input type="text" id="fieldName" class="form-control" placeholder="Field Name" disabled="disabled" value="'+data.Field+'">
+								</td>
+								<td>
+									<input type="text" name="fieldTitle" class="form-control" placeholder="Field" >
+								</td>
+								<td>
+									<select class="form-control" name="dataType" value="'+(data.Type.indexOf("int") != -1)?"number":"string"+'">
+									  <option>String</option>
+									  <option>number</option>
+									</select>
+								</td>
+								<td>
+									<div class="checkbox">
+									    <input type="checkbox" value="'+data.Field+'" name="xAxis">
+									</div>
+								</td>
+								<td>
+									<select class="form-control" name="yAxis">
+									  <option>SUM</option>
+									  <option>MAX</option>
+									</select>
+								</td>
+								<td>
+									<input type="text" name="unit" class="form-control" placeholder="Unit">
+								</td>
+								<td>
+									<select class="form-control" name="necessaryField">
+									  '+makeOption4Column(allField)+'
+									</select>
+								</td>
+							</tr>
+				*/
+				
+			//}
+		}
+		
+		function sendXmlData(){
+			//validate will be server
+			
+			$.ajax({
+				type:"POST",
+				url:"tableInfo/makeXML.do",
+				data:$("#tableDetail").serialize(),
+				dataType:"json",
+				success: function(data){
+					alert(data.MESSAGE);
+				},
+				error : function(request, status, error) {
+					alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
+				}
+			});
+		}
+
+	</script>
+	
+	<div id="wrap">
+		<form role="form" name="tableDetail" id="tableDetail">
+		<input type="hidden" name="tableName" id="tableName"/>
+		<!-- Begin page content -->
+		<div class="container">
+			<div class="page-header">
+				<h1>ThirdEyE Generate Metadata</h1>
+			</div>
+			<blockquote>
+				<p>Generate XML</p>
+				<small>1. Input title.</small>
+				<small>2. Input xml name.</small>
+				<small>3. Select table or view.</small>
+				<small>4. Define X and Y axis field.</small>
+			</blockquote>
+			
+			<div class="well">
+				<div class="row">
+					<div class="col-md-3">
+						<span style="color: #3880aa; font-weight: bold;">TITLE</span>
+					</div>
+					<div class="col-md-4">
+						<input type="text" name="title" class="form-control" placeholder="TITLE">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<span style="color: #3880aa; font-weight: bold;">XML NAME</span>
+					</div>
+					<div class="col-md-4">
+						<input type="text" name="fileName"  id="fileName" class="form-control" placeholder="XML NAME">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<span style="color: #3880aa; font-weight: bold;">TABLE NAME</span>
+					</div>
+					<div class="col-md-4">
+						<div class="btn-group">
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+								<span id="sectCombo1Label" >TABLE_NAME</span><span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" id="sectCombo1Menu">
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" >
+				<div style="height: 100%;">
+					<div class="panel panel-primary" style="height: 100%;">
+						<div class="panel-heading">
+							<h3 class="panel-title">FIELD INFO</h3>
+						</div>
+						<div class="panel-body">
+							<table class="table" id="tableDetailInfo">
+								<thead>
+									<tr>
+										<th>USE</th>
+										<th>Field name</th>
+										<th>Field Title</th>
+										<th>Data type</th>
+										<th>X-axis</th>
+										<th>Y-axis</th>
+										<th>Unit</th>
+										<th>Necessary field</th>
+									</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 col-md-offset-5">
+						<a href="javascript:sendXmlData()" class="btn btn-primary btn-lg">Gen. XML Metadata</a>
+					</div>
+				</div>
+			</div>
+
+		</div><!-- .container -->
+		</form>
+	</div><!-- #wrap -->
+
+</body>
+</html>

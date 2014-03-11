@@ -1,0 +1,652 @@
+
+<script type="text/javascript">
+	
+	/** businessCode */
+	var businessCode = null;
+	
+	/** chart instance */
+	var myChart = null;
+	var axis1 = null;
+	var axis2 = null;
+    var graph1 = null;
+    var graph2 = null;
+	
+	/** selectTool, mouse control offset */
+	var selectTool = null;
+	var leftOffset = null;
+	var topOffset = null;
+	
+	/** history selected data during drill down */ 
+	var selectedDataHistory = null;
+	var selectedData = null;
+	
+	/** selectTool items */
+	var groupingTargets = null;
+	
+	/** grouping field history */
+	var groupingFieldHistory = null;
+	/** current grouping field */
+	var currentGroupingField = null;
+	
+	/**
+	 *	jQuery onReady
+	 */
+	$(document).ready(function(){
+		
+		businessCode = getBusinessCode();
+		if( businessCode == null || businessCode == "" ){
+			alert("can't get business parameter");
+			return;
+		}
+		
+		initChartHideComponent();
+		
+		getMetadata( parseMetadata );
+	});
+	
+	/**
+	 *	Init Chart Select Tool
+	 */
+	function initChartHideComponent(){
+		
+		leftOffset = -10;
+		topOffset = -32;
+		
+		if( $('#ex-selectTool').length > 0 ){
+			selectTool = $('#ex-selectTool');
+			selectTool.html('');
+		}else{
+			selectTool = $('<div id="ex-selectTool"/>');
+			selectTool.attr('class', 'ex-selectTool alert alert-info  adjusted alert-block');
+			$('body').append(selectTool);
+		}
+		
+		$(selectTool).mouseleave(function(x) {
+			$(selectTool).hide();
+		});
+	}
+	
+	/**
+	 *	Get Metadata
+	 */
+	function getMetadata(callbackFunc){
+	
+		$.ajax({
+			type : "GET",
+			url : "thirdEye/getMetadata.do?businessCode="+businessCode,
+			dataType : "json",
+			data : {},
+			success : function(ajaxResponse) {
+				//alert(ajaxResponse);
+				callbackFunc.call(this, ajaxResponse);
+			},
+			error : function(request, status, error) {
+				alert("code : " + request.status + "\r\nmessage : "
+						+ request.reponseText);
+			}
+		});
+	}
+	
+	/**
+	 *	Parse Metadata
+	 */
+	function parseMetadata( metadataSource ){
+		
+		groupingTargets = [];
+		
+		var firstItemVo = null; /* 첫번째 ITEM */
+		
+		var xmlDoc = $.parseXML( metadataSource ),
+	    $xml = $( xmlDoc ),
+	    $group = $xml.find( "group" ),	/* group 항목 */
+		$item = $xml.find( "item" );	/* item 항목 */
+		
+		$("#page-header").text( $xml.find( "dataMaster" )[0].getAttribute("mainTitle") );
+		
+		$group.each(function (index){
+			
+			var itemVo = {
+					tagName : $(this)[0].getAttribute("tagName"),
+					headerText : $(this)[0].getAttribute("headerText"),
+					summaryFunc : $(this)[0].getAttribute("summaryFunc"),
+					parentFieldId : $(this)[0].getAttribute("parentFieldId"),
+					unitDisp : $(this)[0].getAttribute("unitDisp")
+			};
+			
+			if( index == 0 ){
+				firstItemVo = itemVo;
+			}
+			
+			groupingTargets.push( itemVo );
+			var $targetGroup = $("<button/>")
+				.attr("id", "targetGroup_"+itemVo.tagName)
+				.attr("type", "button")
+				.attr("class", "btn btn-link btn-small text-right")
+				.width("100%")
+				.on("click", function(){
+					onClickGroup( itemVo );	
+				})
+				.append(
+					'<strong>'+itemVo.headerText+'</strong>'+
+					'<span class="text-warning">별로 보기</span>'
+				);
+			
+			//$(selectTool).append( $targetGroup.add('<br/>') );
+			$(selectTool).append( $("<div/>").append($targetGroup) );
+		});
+		
+		$item.each(function (index){
+			
+			var itemVo = {
+					tagName : $(this)[0].getAttribute("tagName"),
+					headerText : $(this)[0].getAttribute("headerText"),
+					summaryFunc : $(this)[0].getAttribute("summaryFunc"),
+					parentFieldId : $(this)[0].getAttribute("parentFieldId"),
+					unitDisp : $(this)[0].getAttribute("unitDisp")
+			};
+	
+			var $target1Item = $( '<li><a href="javascript:onChangeItem(1,\''+itemVo.tagName+'\',\''+itemVo.headerText+'\',\''+itemVo.summaryFunc+'\',\''+itemVo.parentFieldId+'\',\''+itemVo.unitDisp+'\')">'+itemVo.headerText+'</a></li>' );
+			$('#sectCombo1Menu').append( $target1Item );
+			if(index==0){
+				$("#sectCombo1Label").text(itemVo.headerText);
+				$("#sectCombo1Label").val(itemVo);
+			}
+			
+			var $target2Item = $( '<li><a href="javascript:onChangeItem(2,\''+itemVo.tagName+'\',\''+itemVo.headerText+'\',\''+itemVo.summaryFunc+'\',\''+itemVo.parentFieldId+'\',\''+itemVo.unitDisp+'\')">'+itemVo.headerText+'</a></li>' );
+			$('#sectCombo2Menu').append( $target2Item );
+			if(index==1){
+				$("#sectCombo2Label").text(itemVo.headerText);
+				$("#sectCombo2Label").val(itemVo);
+			}
+		});
+		
+		initChart();
+		
+		// 최초 아이템 클릭 이벤트 강제 실행
+		onClickGroup( firstItemVo );
+	}
+	
+	/**
+	 *	Draw Chart
+	 */
+    function initChart(){
+    	
+    	$('#chartdiv').html('');
+			
+		// SERIAL CHART
+		myChart = new AmCharts.AmSerialChart();
+		myChart.pathToImages = "img/amchart/";
+		myChart.dataProvider = {};
+		myChart.categoryField = "category";
+		myChart.marginTop = 0;
+		myChart.autoMarginOffset = 5;
+		myChart.columnWidth = 0.4; //Value range is 0 - 1. default 0.8
+		myChart.addListener("clickGraphItem", function(event) {
+			
+			selectedData = event.chart.dataProvider[event.index];
+			/* 
+			$("#chartlog")
+				.html("layer:"+event.event.layerX+","+event.event.layerY).append("<br/>")
+				.append("offset:"+event.event.offsetX+","+event.event.offsetY).append("<br/>")
+				.append("page:"+event.event.pageX+","+event.event.pageY).append("<br/>")
+				.append("screen:"+event.event.screenX+","+event.event.screenY);
+			 */
+			$(selectTool)
+				.css({
+					top : event.event.pageY + topOffset,
+					left : event.event.pageX + leftOffset
+				})
+				.show();
+		});
+	
+		/** CategoryAxis
+		-------------------------------------------*/
+		var categoryAxis = myChart.categoryAxis;
+		categoryAxis.labelRotation = 0;
+		categoryAxis.gridPosition = "start";
+		categoryAxis.autoGridCount = false;
+		categoryAxis.gridCount = 50;
+		categoryAxis.gridAlpha = 0;
+		categoryAxis.gridColor = "#000000";
+		categoryAxis.axisColor = "#000";
+		
+		// CURSOR
+		var chartCursor = new AmCharts.ChartCursor();
+		chartCursor.zoomable = false;
+		//chartCursor.categoryBalloonDateFormat = "DD";
+		//chartCursor.cursorAlpha = 0;
+		chartCursor.cursorColor = '#232323';
+		myChart.addChartCursor(chartCursor);
+	
+		// LEGEND
+		var legend = new AmCharts.AmLegend();
+		legend.bulletType = "round";
+		legend.equalWidths = false;
+		legend.valueWidth = 120;
+		legend.color = "#000000";
+		myChart.addLegend(legend);
+		
+		// BAR
+		/* var chartScrollbar = new AmCharts.ChartScrollbar();
+		chartScrollbar.scrollbarHeight = 25;
+		chartScrollbar.graph = salesGraph; // as we want graph to be displayed in the scrollbar, we set graph here
+		chartScrollbar.graphType = "line"; // we don't want candlesticks to be displayed in the scrollbar
+		chartScrollbar.gridCount = 5;
+		chartScrollbar.color = "#FFFFFF";
+		chart.addChartScrollbar(chartScrollbar);*/
+	
+		// WRITE
+		myChart.write("chartdiv");
+		
+		resetChart();
+    }
+	
+    /**
+	 *	Reset Chart
+	 */
+	function resetChart(){
+		
+		var itemVo1 = $("#sectCombo1Label").val();
+		var itemVo2 = $("#sectCombo2Label").val();
+		
+		/** ValueAxis
+		-------------------------------------------*/
+		if( axis1 == null ){
+			axis1 = new AmCharts.ValueAxis();
+			myChart.addValueAxis(axis1);
+		}
+		axis1.title = itemVo1.headerText;
+		axis1.color = "#739BC5";
+		axis1.gridAlpha = 0.05;
+		axis1.axisAlpha = 0;
+		axis1.position = "left";
+		axis1.inside = true;
+		axis1.unit = itemVo1.unitDisp;
+		
+		if( axis2 == null ){
+			axis2 = new AmCharts.ValueAxis();
+			myChart.addValueAxis(axis2);
+		}
+		axis2.title = itemVo2.headerText;
+		axis2.color = "#CC0000";
+		axis2.gridAlpha = 0;
+		axis2.axisAlpha = 0;
+		axis2.position = "right";
+		axis2.inside = true;
+		axis2.unit = itemVo2.unitDisp;
+	
+		/** GRAPHS
+		-------------------------------------------*/
+		if( graph1 == null ){
+			graph1 = new AmCharts.AmGraph();
+			myChart.addGraph(graph1);
+		}
+		graph1.title = itemVo1.headerText;
+		graph1.valueField = "value1Field";
+		graph1.type = "column";
+		graph1.valueAxis = axis1;
+		graph1.balloonText = "[[value]]"+itemVo1.unitDisp;
+		graph1.legendValueText = "[[value]]"+itemVo1.unitDisp;
+		
+		graph1.fillAlphas = 0.7;
+		graph1.fillColors = ["#005097", "#006AAC"];
+		graph1.lineColor = "#739BC5";
+		graph1.lineAlpha = .7;
+		
+		
+		if( graph2 == null ){
+			graph2 = new AmCharts.AmGraph();
+			myChart.addGraph(graph2);
+		}
+		graph2.title = itemVo2.headerText;
+		graph2.valueField = "value2Field";
+		graph2.type = "line";
+		graph2.valueAxis = axis2;
+		graph2.balloonText = "[[value]]"+itemVo2.unitDisp;
+		graph2.legendValueText = "[[value]]"+itemVo2.unitDisp;
+		
+		graph2.lineThickness = 1;
+		graph2.lineColor = "#CC0000";
+		graph2.bullet = "square";
+		
+	}
+	
+	/**
+	 *	분석 Group 선택 시
+	 */
+	function onClickGroup( itemVo ){
+		
+		/**
+		 *	itemVo
+		 *		tagName
+		 *		headerText
+		 *		summaryFunc
+		 *		parentFieldId
+		 *		unitDisp
+		 */
+		 
+		if( groupingFieldHistory == null ){
+			groupingFieldHistory = [];
+		}
+		if( selectedDataHistory == null ){
+			selectedDataHistory = [];
+		}
+		
+		preItemVo = null;
+		if( groupingFieldHistory.length > 0 ){
+			preItemVo = groupingFieldHistory[groupingFieldHistory.length-1];
+		}
+
+		groupingFieldHistory.push( itemVo );
+		selectedDataHistory.push( selectedData );
+		addGroupingHistory( itemVo, preItemVo, selectedData );
+		
+		doSearch( itemVo.tagName );
+	}
+	
+	/**
+	 *	분석 Group History 추가
+	 */
+	function addGroupingHistory( itemVo, preItemVo, _selectedData ){
+		
+		var $historyDisp = $( document.createElement( "button" ) )
+						//.attr("id", "historyGroup_"+itemVo.tagName)
+						.attr("type", "button")
+						.attr("class", "btn btn-link btn-small")
+						.css("border-style", "none")
+						.on("click", function(){
+							onClickGroupHistory( itemVo );	
+						})
+						.append(
+							'<span class="text-warning">&gt;&nbsp;</span>'
+						)
+						.append(
+							'<strong><span id="historyGroup_'+itemVo.tagName+'"></span></strong>'
+						)
+						.append(
+							'<span class="text-warning">'+itemVo.headerText+'</span>'+
+							''//'<span class="text-warning">별</span>'
+						);
+		
+		$('#historyInfo').append( $historyDisp );
+		
+		if( preItemVo != null ){
+			
+			$('#historyGroup_'+preItemVo.tagName).html( _selectedData.category + " " );
+		}
+	}
+	
+	/**
+	 *	Group History Click
+	 */
+	function onClickGroupHistory( itemVo ){
+		
+		var _newSelectedDataHistory = [];
+		var _selectedData;
+		
+		var _newGroupingFieldHistory = [];
+		var _groupingField;
+		for( var index in groupingFieldHistory ){
+			
+			_selectedData = selectedDataHistory[index];
+			_newSelectedDataHistory.push(_selectedData);
+			
+			_groupingField = groupingFieldHistory[index];
+			_newGroupingFieldHistory.push(_groupingField);
+			
+			if( _groupingField.tagName == itemVo.tagName ){
+				break;
+			}
+		}
+		selectedDataHistory = _newSelectedDataHistory;
+		groupingFieldHistory = _newGroupingFieldHistory;
+		
+		$('#historyInfo').html("");
+		for( var index in groupingFieldHistory ){
+			
+			_groupingField = groupingFieldHistory[index];
+			
+			var preItemVo = null;
+			if( groupingFieldHistory.length > 0 ){
+				preItemVo = groupingFieldHistory[index-1];
+			}
+			
+			addGroupingHistory( _groupingField, preItemVo, selectedDataHistory[index] );
+		}
+		
+		doSearch( _groupingField.tagName );
+	}
+	
+	/**
+	 *	분석항목 변경 시
+	 */
+	function onChangeItem( sectCombo, tagName, headerText, summaryFunc, parentFieldId, unitDisp ){
+		
+		var itemVo = {
+				tagName : tagName,
+				headerText : headerText,
+				summaryFunc : summaryFunc,
+				parentFieldId : parentFieldId,
+				unitDisp : unitDisp
+		};
+		
+		var $sectComboLabel = sectCombo == 1 ? $("#sectCombo1Label") : $("#sectCombo2Label");
+		$sectComboLabel.text(itemVo.headerText);
+		$sectComboLabel.val(itemVo);
+		
+		doSearch("");
+		resetChart();
+	}
+	
+	/**
+	 *	Decide The Destiny Of TargetGroup
+	 */
+	function decideTheDestinyOfTargetGroup(){
+		
+		// select tool의 전체 targetGroup을 초기화
+		for(var index in groupingTargets){
+			
+			$("#targetGroup_"+groupingTargets[index].tagName).attr("disabled", false);
+			$("#targetGroup_"+groupingTargets[index].tagName).show();
+			
+			// parentFieldId 가 있으면 parentFieldId가 선택되지 않은 것들 비활성화
+			if( groupingTargets[index].parentFieldId != null ){
+				
+				var isIn = false;
+				for(var i in groupingFieldHistory/*선택된 groupingField*/){
+					if( groupingTargets[index].parentFieldId == groupingFieldHistory[i].tagName ){
+						isIn = true;
+						break;
+					}
+				}
+				if( !isIn ){
+					// 자식인데 부모가 아직 선택이 안되었다면 disabled
+					$("#targetGroup_"+groupingTargets[index].tagName).attr("disabled","disabled");
+					//$("#targetGroup_"+groupingTargets[index].tagName).hide();
+				}
+			}
+		}
+		
+		// select tool의 이미 선택된 group 숨김
+		for(var index in groupingFieldHistory){
+			$("#targetGroup_"+groupingFieldHistory[index].tagName).hide();
+		}
+		
+	}
+	
+	/**
+	 *	Request Data
+	 */
+	function doSearch( groupingField ){
+		
+		// 새로운 Grouping 조합일때
+		if(groupingField != ""){
+			
+			// 현재 Grouping Field 저장
+			currentGroupingField = groupingField;
+			decideTheDestinyOfTargetGroup();
+		}
+		
+		var value1Field = $("#sectCombo1Label").val().tagName;
+		var value2Field = $("#sectCombo2Label").val().tagName;
+		
+		var params = {};
+		params.businessCode = businessCode;
+		params.groupingField = currentGroupingField;
+		params.value1Field = value1Field;
+		params.value2Field = value2Field;
+		
+		var historyNames = [];
+		var historyValues = [];
+		for( var i=1; i<groupingFieldHistory.length; i++ ){
+			
+			historyNames.push( groupingFieldHistory[i-1].tagName );
+			historyValues.push( selectedDataHistory[i].category );
+		}
+		
+		params.historyNames = historyNames.join("^");
+		params.historyValues = historyValues.join("^");
+		
+		$.ajax({
+			type : "POST",
+			url : "thirdEye/groupingList.do",
+			dataType : "json",
+			data : params,
+			success : function(ajaxResponse) {
+				
+				bindData( ajaxResponse );
+			},
+			error : function(request, status, error) {
+				alert("code : " + request.status + "\r\nmessage : "
+						+ request.reponseText);
+			}
+		});
+		
+		$(selectTool).hide();
+	}
+	
+	/**
+	 *	Response Data
+	 */
+	function bindData( originalDatas ){
+		
+		setDataProvider( originalDatas );
+	}
+	
+	/**
+	 *	get business from parameter
+	 */
+	function getBusinessCode(){
+		
+		//전역에서 가져옴.
+		return global_getRequestParam("business");
+	}
+    
+	/**
+	 *	set chart data provider
+	 */
+    function setDataProvider( dataProvider ){
+		
+		myChart.dataProvider = dataProvider;
+		myChart.validateData();
+		
+		
+		// amCharts license
+		$("#chartdiv a").css({"right":0, "left":"", "top":0});
+    }
+	
+</script>
+
+					<!-- page header -->
+					<h1 id="page-header">Dashboard</h1>	
+
+					<div class="alert adjusted alert-warning">
+						<button class="close" data-dismiss="alert">×</button>
+						<i class="cus-exclamation"></i>
+						<strong>Welcome to ThirdEyE.</strong> You can dynamic analyze data over a drilldown.
+					</div>
+					
+					<div class="alert alert-info adjusted alert-block" style="padding-bottom: 2px;">
+				
+						<span style="color: #3880aa; font-weight: bold;">분석항목A</span>
+						<div class="btn-group">
+							<button type="button" class="btn btn-small btn-primary dropdown-toggle" data-toggle="dropdown">
+								<span id="sectCombo1Label" >Dropdown</span><span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" id="sectCombo1Menu">
+							</ul>
+						</div>
+						
+						<span style="color: #CC0000; font-weight: bold; margin-left: 20px;">분석항목B</span>
+						<div class="btn-group">
+							<button type="button" class="btn btn-small btn-danger dropdown-toggle" data-toggle="dropdown">
+								<span id="sectCombo2Label" >Dropdown</span><span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" id="sectCombo2Menu">
+							</ul>
+						</div>
+						
+						<button type="button" class="btn btn-primary" style="margin-left: 20px; visibility: hidden;" onclick="doSearch('root_tmp')">Search</button>
+						
+						<div id="historyInfo" style="padding-top:5px;"/>
+						
+					</div>
+					
+					<div class="fluid-container">
+						
+						<!-- widget grid -->
+						<section id="widget-grid" class="">
+							
+							<!-- row-fluid -->
+							<div class="row-fluid">
+								<article class="span12">
+									
+									<div class="jarviswidget transparent" id="widget-id-0">
+									    <header>
+									        <h2>No Title</h2>                           
+									    </header>
+									    
+									    <!-- widget div-->
+									    <div>
+									    	<!-- widget edit box -->
+									        <div class="jarviswidget-editbox">
+									            <div>
+									                <label>Title:</label>
+									                <input type="text" />
+									            </div>
+									            <div>
+									                <label>Styles:</label>
+									                <span data-widget-setstyle="purple" class="purple-btn"></span>
+									                <span data-widget-setstyle="navyblue" class="navyblue-btn"></span>
+									                <span data-widget-setstyle="green" class="green-btn"></span>
+									                <span data-widget-setstyle="yellow" class="yellow-btn"></span>
+									                <span data-widget-setstyle="orange" class="orange-btn"></span>
+									                <span data-widget-setstyle="pink" class="pink-btn"></span>
+									                <span data-widget-setstyle="red" class="red-btn"></span>
+									                <span data-widget-setstyle="darkgrey" class="darkgrey-btn"></span>
+									                <span data-widget-setstyle="black" class="black-btn"></span>
+									            </div>
+									        </div>
+									        <!-- end widget edit box -->
+            
+									        <div class="inner-spacer"> 
+									        	<!-- content goes here -->
+									        	
+									        	<div id="chartdiv" class="chart" style="height:350px; margin:0;"></div>
+									        	<div id="chartlog"></div>
+									        													
+									        	<!-- end calendar container -->
+									        </div>
+									        
+									    </div>
+									    <!-- end widget div -->
+									</div>
+
+								</article>
+							</div>
+							
+							<!-- end row-fluid -->
+							
+						</section>
+						<!-- end widget grid -->
+					</div>	

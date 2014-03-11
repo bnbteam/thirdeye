@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <title>ThirdEyE</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!--// CSS FILES //-->   
+	<link rel="stylesheet" href="css/master-css.min.css">
+	<link rel="stylesheet" href="css/thirdeye.css">
+    
+	<!-- // THEME CSS changed by javascript: the CSS link below will override the rules above // -->
+	<!-- For more information, please see the documentation for "THEMES" -->
+    <link rel="stylesheet" id="switch-theme-js" href="css/themes/default.css?v=1">   
+	
+   	<!-- To switch to full width -->
+    <link rel="stylesheet" id="switch-width" href="css/full-width.css?v=1">
+    
+	<!-- Webfonts -->
+	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Lato:300,400,700' type='text/css'>
+	
+	<!-- All javascripts are located at the bottom except for HTML5 Shim -->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+   		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   		<script src="js/include/respond.min.js"></script>
+   	<![endif]-->
+	
+	<!-- For Modern Browsers -->
+	<link rel="shortcut icon" href="img/favicons/favicon.png">
+	<!-- For everything else -->
+	<link rel="shortcut icon" href="img/favicons/favicon.ico">
+	<!-- For retina screens -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
+	<!-- For iPad 1-->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicons/apple-touch-icon-ipad.png">
+	<!-- For iPhone 3G, iPod Touch and Android -->
+	<link rel="apple-touch-icon-precomposed" href="img/favicons/apple-touch-icon.png">
+	
+	<!-- iOS web-app metas -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!-- Add your custom home screen title: -->
+	<!--<meta name="apple-mobile-web-app-title" content="Jarvis"> -->
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+	
+  </head>
+
+  <body>
+  	<!-- .height-wrapper -->
+	<div class="height-wrapper">
+		
+		<!-- header -->
+		<header>
+			<!-- tool bar -->
+			<div id="header-toolbar" class="container-fluid">
+				<!-- .contained -->
+				<div class="contained">
+					
+					<!-- theme name -->
+					<h1>ThirdEyE</h1>
+					<img alt="" src="img/favicons/favicon.png" style="width: 28px;"/>
+					<h1>in bullnabi project</h1>
+					<!-- end theme name -->
+																		
+					<!-- span4 -->
+					<div class="pull-right">
+						<!-- demo theme switcher-->
+						<div id="theme-switcher" class="btn-toolbar">
+							
+							<!-- search and log off button for phone devices -->
+							<div class="btn-group pull-right visible-phone">
+								<a href="javascript:void(0)" class="btn btn-inverse btn-small"><i class="icon-search"></i></a>
+								<a href="login.html" class="btn btn-inverse btn-small"><i class="icon-off"></i></a>
+							</div>
+							<!-- end buttons for phone device -->
+							
+							<!-- Tasks -->
+							<div class="btn-group hidden-phone">
+								<a href="javascript:void(0)" class="btn btn-inverse btn-small">bullnabi site</a>
+								<a href="javascript:void(0)" class="btn btn-inverse dropdown-toggle btn-small" data-toggle="dropdown"><span class="caret"></span></a>
+					
+								<div class="dropdown-menu toolbar pull-right">
+									<h3>Bullnabi Project site.</h3>
+									<ul class="progressbox" style="background-color: #646363">
+						                <li>
+						                    <strong><i class="online pull-left"></i><a href="http://www.bullnabi.com">www.bullnabi.com</a></strong>
+						                </li>
+						                <li>
+						                    <strong><i class="online pull-left"></i><a href="http://bnb.bullnabi.com">bnb.bullnabi.com</a></strong>
+						                </li>
+						                <li>
+						                    <strong><i class="online pull-left"></i><a href="http://thirdeye.bullnabi.com">thirdeye.bullnabi.com</a></strong>
+						                </li>
+						            </ul>
+								</div>
+
+							</div>
+							<!-- end Tasks -->
+							
+							<!-- theme dropdown -->
+							<div class="btn-group hidden-phone">
+								<a href="javascript:void(0)" class="btn btn-small btn-inverse" id="reset-widget"><i class="icon-refresh"></i></a>
+								<a href="javascript:void(0)" class="btn btn-small btn-inverse dropdown-toggle" data-toggle="dropdown">Themes <span class="caret"></span></a>
+								<ul id="theme-links-js" class="dropdown-menu toolbar pull-right">
+									<li>
+										<a href="javascript:void(0)" data-rel="purple"><i class="icon-sign-blank purple-icon"></i>Royal Purple</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)" data-rel="blue"><i class="icon-sign-blank navyblue-icon"></i>Navy Blue</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)" data-rel="green"><i class="icon-sign-blank green-icon "></i>Emerald</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)" data-rel="darkred"><i class="icon-sign-blank red-icon "></i>Dark Rose</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)" data-rel="default"><i class="icon-sign-blank grey-icon"></i>Default</a>
+									</li>
+								</ul>
+							</div>
+							<!-- end theme dropdown-->
+							
+						</div>
+					  	<!-- end demo theme switcher-->
+					</div>
+					<!-- end span4 -->
+				</div>
+				<!-- end .contained -->
+			</div>
+			<!-- end tool bar -->
+			
+		</header>
+		<!-- end header -->
+		
+	    <div id="main" role="main" class="container-fluid">
+	    	
+			<div class="contained">
+				<!-- aside -->	
+				<aside>	
+					
+					<!-- search box -->
+					<div class="main-search">
+						<label for="main-search"><i class="icon-search"></i></label>
+	                    <input id="main-search" type="text" placeholder="Search...">
+                	</div>
+					<div class="divider"></div>
+					<!-- end search box -->
+										
+					<!-- aside item: Mini profile -->
+					<div class="my-profile">
+						<span class="my-profile-pic">
+							<!-- <img src="img/avatar/avatar_1.jpg" alt="" style="height: 60px;"/> -->
+							<img src="img/avatar/avatar_0.jpg" alt=""/>
+						</span>
+						<span class="first-child"><strong>ThirdEyE</strong></span>
+						<span>in bullnabi</span>
+						<span>project</span>
+					</div>
+					<div class="divider"></div>
+					<!-- end aside item: Mini profile -->
+
+					<!-- aside item: Menu -->
+					<div class="sidebar-nav-fixed">
+						
+						<ul class="menu" id="accordion-menu-js" style="display: none;">
+							<li class="current">
+								<a href="#"><i class="icon-signal"></i>ThirdEyE amCharts</a>
+								<ul>
+									<li>
+										<a href="thirdeyeAmchart.html?business=sells" class="expanded">sells</a>
+									</li>
+									<li>
+										<a href="thirdeyeAmchart.html?business=releaseCar">releaseCar</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#"><i class="icon-off"></i>ThirdEyE flex</a>
+								<ul>
+									<li>
+										<a href="flex/ThirdEyeVFlex.swf?business=sells" hreflang="swf">sells</a>
+									</li>
+									<li>
+										<a href="flex/ThirdEyeVFlex.swf?business=releaseCar" hreflang="swf">releaseCar</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#"><i class="icon-off"></i>ThirdEyE xcharts</a>
+								<ul>
+									<li>
+										<a href="#">ing..</a>
+									</li>
+									<!-- <li>
+										<a href="thirdeye.html?business=sells">sells</a>
+									</li> -->
+								</ul>
+							</li>
+							<li>
+								<a href="#"><i class="icon-signal"></i>ThirdEyE input source</a>
+								<ul>
+									<li>
+										<a href="inputsource/sells.html">sells</a>
+									</li>
+									<li>
+										<a href="inputsource/releaseCar.html">releaseCar</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#"><i class="icon-off"></i>ThirdEyE Info.</a>
+								<ul>
+									<li>
+										<a href="superdevelperKseason2presentation.html">SuperDev. presentation</a>
+									</li>
+									<li>
+										<a href="sourceInfo.html">Source Info</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+						
+					</div>
+					<div class="divider"></div>
+					<!-- end aside item: Menu -->
+					
+					<!-- sparkline stats -->
+					<ul class="mystats indented">
+		                <li class="first">
+		                    <h1><span>My Balance:</span>$17,349</h1>
+		                    <div class="mychart" id="balance" style="width:35px"></div>
+		                </li>
+		                <li>
+		                    <h1><span>Impressions:</span>145k+</h1>
+		                    <div class="mychart" id="clicks" style="width:35px"></div>
+		                </li>
+		            </ul>
+		            <div class="divider"></div>
+		            <!-- end sparkline stats -->
+					
+					<!-- aside item: Tiny Stats -->
+					<div class="number-stats">
+				    	<ul>
+				        	<li>54<span>visitors</span></li>
+				            <li>8<span>orders</span></li>
+				            <li>3<span>reviews</span></li>
+				        </ul>
+				    </div>
+				    <div class="divider"></div>
+					<!-- end aside item: Tiny Stats -->
+					
+				</aside>
+				<!-- aside end -->
+				
+				<div id="page-content">
+				</div><!-- /#page-content -->
+			
+				<!-- aside right on high res -->
+				<aside class="right">
+					
+					<!-- aside progress bars -->
+					<ul class="indented aside-progress-stats">
+						<li>
+							<!-- easy pie chart -->
+							<div class="easypie">
+								<div class="percentage" data-percent="86">
+									<span>86</span>%
+								</div>
+								<div class="easypie-text">
+									<span style="color:#FFFF00; font-size:10pt;">86%</span> &nbsp; approach....<br/>
+									ongoing ThirdEyE
+								</div>
+							</div>
+							<!-- end easy pie chart -->
+						</li>
+		                <li>
+		                    <strong>Standard Framework</strong><strong class="pull-right">86%</strong>
+		                    <div class="progress progress-success slim"><div class="bar" data-percentage="86"></div></div>
+		                </li>
+		                <li>
+		                    <strong>Dynamic Programming</strong><strong class="pull-right">98%</strong>
+		                    <div class="progress progress-info slim"><div class="bar" data-percentage="98"></div></div>
+		                </li>
+		                <li>
+		                    <strong>Binding Some Chart</strong><strong class="pull-right">73%</strong>
+		                    <div class="progress progress-success slim"><div class="bar" data-percentage="73"></div></div>
+		                </li>
+		            </ul>
+		            <div class="divider"></div>
+		            <!-- end aside progress bars -->
+					
+					<!-- aside buttons -->
+					<div class="aside-buttons">
+		                <a href="javascript:void(0);" title="" class="btn btn-info">Super developer.K season2</a>
+		                <a href="javascript:void(0);" title="" class="btn btn-success">eGovFrame Open Community</a>
+		            </div>
+		            <div class="divider"></div>
+		            <!-- end aside buttons -->
+				</aside>
+				
+				<!-- end aside right -->
+			</div>
+			
+	    </div><!--end fluid-container-->
+		<div class="push"></div>
+	</div>
+	<!-- end .height wrapper -->
+	
+	<!-- footer -->
+	
+	<!-- if you like you can insert your footer here -->
+	
+	<!-- end footer -->
+
+    <!--================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/libs/jquery.min.js"><\/script>')</script>
+    	<!-- OPTIONAL: Use this migrate script for plugins that are not supported by jquery 1.9+ -->
+		<!-- DISABLED <script src="js/libs/jquery.migrate-1.0.0.min.js"></script> -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script>window.jQuery.ui || document.write('<script src="js/libs/jquery.ui.min.js"><\/script>')</script>
+    
+   
+    <!-- REQUIRED: Mobile responsive menu generator -->
+	<script src="js/include/selectnav.min.js"></script>
+
+	<!-- REQUIRED: Datatable components -->
+    <script src="js/include/jquery.accordion.min.js"></script>
+
+	<!-- REQUIRED: Toastr & Jgrowl notifications  -->
+    <script src="js/include/toastr.min.js"></script>
+    <script src="js/include/jquery.jgrowl.min.js"></script>
+    
+    <!-- REQUIRED: Sleek scroll UI  -->
+    <script src="js/include/slimScroll.min.js"></script>
+	
+	<!-- REQUIRED: Datatable components -->
+	<script src="js/include/jquery.dataTables.min.js"></script>
+	<script src="js/include/DT_bootstrap.min.js"></script>
+
+    <!-- REQUIRED: Form element skin  -->
+    <script src="js/include/jquery.uniform.min.js"></script>
+
+	<!-- REQUIRED: AmCharts  -->
+    <script src="js/include/amchart/amcharts.js"></script>
+    <script src="js/include/amchart/funnel.js"></script>
+    <script src="js/include/amchart/gauge.js"></script>
+    <script src="js/include/amchart/pie.js"></script>
+    <script src="js/include/amchart/radar.js"></script>
+    <script src="js/include/amchart/serial.js"></script>
+    <script src="js/include/amchart/xy.js"></script>
+    
+    <script src="js/jquery.swfobject.1-1-1.js"></script>
+    <script src="js/google.analytics.www.bullnabi.com.js"></script>
+
+	<script type="text/javascript">
+		var ismobile = (/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()));	
+	    if(!ismobile){
+	    	
+	    	/** ONLY EXECUTE THESE CODES IF MOBILE DETECTION IS FALSE **/
+	    	/* REQUIRED: Datatable PDF/Excel output componant */
+	        $(function() {
+	            
+	        });
+	    }else{
+	    	
+	    	/** ONLY EXECUTE THESE CODES IF MOBILE DETECTION IS TRUE **/
+			document.write('<script src="js/include/selectnav.min.js"><\/script>');
+	    }
+	</script>
+	
+	
+	<script type="text/javascript">
+	
+	    /** jQuery onReady */
+		$(document).ready(function(){
+			
+			$('#accordion-menu-js').show();
+			$('#accordion-menu-js a').click(function (e) {
+				
+				//business=sells
+				var href = $(this).attr('href');
+				var flag = $(this).attr('hreflang');
+				if( href != "#" ){
+					
+					var firstParamChar = href.indexOf('?') != -1 ? '&' : '?';
+					movePage( href + firstParamChar + "gav="+parseInt(Math.random()*1000), flag );
+					
+					/* 메뉴 컨트롤 로직
+					1. 전체 a.removeClass('expanded')
+					2. 전체 a.removeClass('current')
+					3. 현재 a.addClass('expanded')
+					4. 현재 부모로 올라가며 .addClass('current')
+					--------------------------------------------------*/
+					
+					// 1. 전체 a.removeClass('expanded')
+					$('#accordion-menu-js a.expanded').removeClass("expanded");
+					// 2. 전체 a.removeClass('current')
+					$('#accordion-menu-js .current').removeClass("current");
+					
+					// 3. 현재 a.addClass('expanded')
+					$(this).addClass('expanded');
+					// 4. 현재 부모로 올라가며 .addClass('current')
+					var currentObject = $(this);
+					while( true ){
+						parentObject = currentObject.parent();
+						if( parentObject.attr('id') == 'accordion-menu-js' ){
+							currentObject.addClass('current');
+							break;
+						}
+						currentObject = parentObject;
+					}
+				}
+				
+				return false;
+			});
+			
+			$('#accordion-menu-js a.expanded').click();
+		});
+	    
+		/** Call page */
+		function movePage(url, flag){
+			
+			global_setRequestParams( url );
+			
+			if( !flag ){
+				$("#page-content").load( url );
+			}
+			else if( flag=="swf" || flag=="flash" || flag=="flex"  ){
+				$('#page-content').flash({
+					swf: url,
+					width: $("#page-content").width(),
+					height: 500
+				});
+			}
+		}
+		
+		
+		/** requestParams Object */
+		var global_requestParams = {};
+		
+		/** getRequestParam */
+		function global_getRequestParam( key ) {
+			
+			return global_requestParams[key];
+		}
+		/** getRequestParams */
+		function global_getRequestParams() {
+			
+			return global_requestParams;
+		}
+		/** setRequestParams */
+		function global_setRequestParams( url ) {
+			global_requestParams = {};
+			var parameters = (url.slice(url.indexOf("?") + 1, url.length)).split("&");
+
+			for ( var i = 0; i < parameters.length; i++) {
+				var key = parameters[i].split("=")[0];
+				var value = parameters[i].split("=")[1];
+
+				global_requestParams[key] = value;
+			}
+		}
+		
+		/** flex 에서 호출
+		---------------------------------*/
+		/** getServerHomeUrl */
+		function getServerHomeUrl(){
+			
+			return "/";			//contextRoot on server
+			//return "/thirdeye/";  	//contextRoot on local
+		}
+		
+		/** getBusinessCode */
+		function getBusinessCode(){
+			
+			return global_getRequestParam("business");
+		}
+		
+		/** getBrowser */
+		function getBrowser(){
+			
+			var browser = {
+			    ie: false, 
+			    firefox: false, 
+			    safari: false, 
+			    opera: false, 
+			    version: -1
+			};
+			
+			//UserAgent detection
+			var useragent = navigator.userAgent.toLowerCase();
+
+			if (useragent.indexOf("opera") != -1) {
+			    browser.opera = true;
+			} else if (useragent.indexOf("msie") != -1) {
+			    browser.ie = true;
+			    browser.version = parseFloat(useragent.substring(useragent.indexOf('msie') + 4));
+			} else if (useragent.indexOf("safari") != -1) {
+			    browser.safari = true;
+			    browser.version = parseFloat(useragent.substring(useragent.indexOf('safari') + 7));
+			} else if (useragent.indexOf("gecko") != -1) {
+			    browser.firefox = true;
+			}
+
+			if (browser.ie == true && browser.version == 7) {
+			    
+			}
+			
+			return browser;
+		}
+	</script>
+
+	
+	<!-- REQUIRED: Justgage animated charts -->
+	<script src="js/include/raphael.2.1.0.min.js"></script>
+    <script src="js/include/justgage.min.js"></script>
+    
+    <!-- REQUIRED: Animated pie chart -->
+    <script src="js/include/jquery.easy-pie-chart.min.js"></script>
+    
+    <!-- REQUIRED: Functional Widgets -->
+    <script src="js/include/jarvis.widget.min.js"></script>
+    <script src="js/include/mobiledevices.min.js"></script>
+    <!-- DISABLED (only needed for IE7 <script src="js/include/json2.js"></script> -->
+	
+	<!-- REQUIRED: Full Calendar -->
+    <script src="js/include/jquery.fullcalendar.min.js"></script>		
+    
+    <!-- REQUIRED: Flot Chart Engine -->
+    <script src="js/include/jquery.flot.cust.min.js"></script>			
+    <script src="js/include/jquery.flot.resize.min.js"></script>		
+    <script src="js/include/jquery.flot.tooltip.min.js"></script>		 
+    
+    <!-- REQUIRED: Sparkline Charts -->
+    <script src="js/include/jquery.sparkline.min.js"></script>
+    
+    <!-- REQUIRED: Progress bar animation -->
+    <script src="js/include/bootstrap-progressbar.min.js"></script>
+    
+    <!-- REQUIRED: wysihtml5 editor -->
+    <script src="js/include/wysihtml5-0.3.0.min.js"></script>
+    <script src="js/include/bootstrap-wysihtml5.min.js"></script>
+    
+    <!-- REQUIRED: Bootstrap Date Picker -->
+    <script src="js/include/bootstrap-datepicker.min.js"></script>
+
+    <!-- REQUIRED: Bootstrap Prompt -->
+    <script src="js/include/bootbox.min.js"></script>
+    
+    <!-- REQUIRED: Bootstrap engine -->
+    <script src="js/include/bootstrap.min.js"></script>
+    
+    <!-- DO NOT REMOVE: Theme Config file -->
+    <script src="js/config.js"></script>
+    
+    <!-- end scripts -->
+  </body>
+</html>

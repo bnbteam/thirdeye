@@ -1,0 +1,544 @@
+/* ============================================ */
+/* style file									*/
+/* 2013-03-04 COREBANK							*/
+/* ============================================ */
+
+global{
+	fontFamily: "dotum";
+	fontSize: 12;
+	color: #555555;
+	borderColor: #CCCCCC;
+	borderAlpha: 0.7;
+	cornerRadius: 0;
+}
+
+	/*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	| 	상권관리시스템 메인
+	|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
+	
+
+/*상권 선택 박스*/
+.mamCaSearchBox{
+	verticalAlign: middle;
+	horizontalAlign: center;
+	verticalGap: 3;
+	paddingTop: 0;
+	paddingBottom: 0;
+	paddingLeft: 10;
+	paddingRight: 7;
+	background-image: Embed(source='assets/mam/images/local/search_result.png', 
+							scaleGridLeft=2, scaleGridRight=171, 
+							scaleGridTop=2, scaleGridBottom=28);
+}
+
+/*상권 선택 버튼*/
+.mamCaSearchButton{
+	disabledSkin:	Embed(source="assets/mam/images/home/btn_search_result.png");
+    downSkin:		Embed(source="assets/mam/images/home/btn_search_result.png");
+	upSkin:			Embed(source="assets/mam/images/home/btn_search_result.png");
+	overSkin:		Embed(source="assets/mam/images/home/btn_search_result.png");
+}
+
+/*왼쪽 메뉴 Top*/
+.mamMenuTopButton
+{
+	upSkin:			Embed(source='assets/mam/images/main/side_menu_top.png',	scaleGridLeft=1, scaleGridRight=8, scaleGridTop=1, scaleGridBottom=8);
+	downSkin:		Embed(source='assets/mam/images/main/side_menu_top.png',	scaleGridLeft=1, scaleGridRight=8, scaleGridTop=1, scaleGridBottom=8);
+	overSkin:		Embed(source='assets/mam/images/main/side_menu_top.png',	scaleGridLeft=1, scaleGridRight=8, scaleGridTop=1, scaleGridBottom=8);
+	disabledSkin:	Embed(source='assets/mam/images/main/side_menu_top.png',	scaleGridLeft=1, scaleGridRight=8, scaleGridTop=1, scaleGridBottom=8);
+}
+
+/*왼쪽 메뉴 Depth1*/
+.mamMenuDept1Button
+{
+	upSkin:			Embed(source='assets/mam/images/main/side_menu_off.png',	scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	downSkin:		Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	overSkin:		Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	disabledSkin:	Embed(source='assets/mam/images/main/side_menu_off.png',	scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	fontFamily: "dotum";
+	font-size: 13px;
+	font-weight: bold;
+	text-align: left;
+	color: #5A617B;
+	text-roll-over-color:#5A617B;
+	text-selected-color:#5A617B;
+	letter-spacing:-1px;
+}
+
+/*왼쪽 메뉴 Depth1 (선택시)*/
+.mamMenuDept1ButtonSelected
+{
+	upSkin:			Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	downSkin:		Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	overSkin:		Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	disabledSkin:	Embed(source='assets/mam/images/main/side_menu_on.png',		scaleGridLeft=2, scaleGridRight=50, scaleGridTop=2, scaleGridBottom=28);
+	fontFamily: "dotum";
+	font-size: 13px;
+	font-weight: bold;
+	text-align: left;
+	color: #5A617B;
+	text-roll-over-color:#5A617B;
+	text-selected-color:#5A617B;
+	letter-spacing:-1px;
+}
+
+/*왼쪽 메뉴 Depth2*/
+.mamMenuDept2Button 
+{
+	upSkin:			Embed(source='assets/mam/images/main/2depth_bl_bg.png');
+	downSkin:		Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	overSkin:		Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	disabledSkin:	Embed(source='assets/mam/images/main/2depth_bl_bg.png');
+	fontFamily: "dotum";
+	font-size: 12px;
+	font-weight:normal;
+	text-align:left;
+	color:#5B5A5F;
+	padding-left: 26;
+	text-roll-over-color:#FF8C00;
+	text-selected-color:#FF8C00;
+	letter-spacing:0px;
+}
+
+/*왼쪽 메뉴 Depth2 (선택시)*/
+.mamMenuDept2ButtonSelected 
+{
+	upSkin:			Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	downSkin:		Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	overSkin:		Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	disabledSkin:	Embed(source='assets/mam/images/main/2depth_select_bl_bg.png');
+	fontFamily: "dotum";
+	font-size: 12px;
+	font-weight:bold;
+	text-align:left;
+	color:#FF8C00;
+	padding-left: 26;
+	text-roll-over-color:#FF8C00;
+	text-selected-color:#FF8C00;
+	letter-spacing:0px;
+}
+
+	/*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	| 	Flex 공통 콤포넌트
+	|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
+
+
+.mamLabel
+{
+   color: #57647C;
+   fontFamily: "dotum";
+   fontSize: 11px;
+}
+
+.mamLinkLabel
+{
+   color: #4163AB;
+   fontFamily: "dotum";
+   fontSize: 11px;
+   textDecoration : "underline";
+}
+
+.mamNoticeLabel
+{
+    color : #0069de;
+    font-family : "dotum";
+    fontSize : 11px;
+}
+
+.mamTextInput
+{
+	disabledSkin : Embed(source="assets/mam/images/local/inputbox.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="15",scaleGridBottom="10");
+	downSkin : Embed(source="assets/mam/images/local/inputbox.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="15",scaleGridBottom="10");
+	overSkin : Embed(source="assets/mam/images/local/inputbox.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="15",scaleGridBottom="10");
+	upSkin : Embed(source="assets/mam/images/local/inputbox.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="15",scaleGridBottom="10");
+    font-size : 11;
+    font-family : "dotum";
+    fontWeight : normal;
+	textAlign : left;
+    border-style : solid;
+    background-alpha : 1.0;
+    border-thickness : 1;
+}
+
+.mamComboBox
+{
+	disabledSkin : Embed(source="assets/mam/images/local/fulldown.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="28",scaleGridBottom="15");
+	downSkin : Embed(source="assets/mam/images/local/fulldown_over.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="28",scaleGridBottom="15");
+	overSkin : Embed(source="assets/mam/images/local/fulldown_over.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="28",scaleGridBottom="15");
+	upSkin : Embed(source="assets/mam/images/local/fulldown.png", scaleGridLeft="10",scaleGridTop="4",scaleGridRight="28",scaleGridBottom="15");
+	
+	font-weight:normal;
+	textInputStyleName : "mamComboText";
+	color:#57647C;
+	disabled-color: #000000;
+	fontFamily: "dotum";
+    fontSize: 11px;
+}
+
+.mamComboText{
+	color:#57647C;
+	font-weight:normal;
+	fontFamily: "dotum";
+   fontSize: 11px;
+}
+
+.mamCheckBox{
+	upIcon: Embed(source='assets/mam/images/local/checkbox_off.png');
+	overIcon:Embed(source='assets/mam/images/local/checkbox_off.png');
+	downIcon:Embed(source='assets/mam/images/local/checkbox_on.png');
+	disabledIcon:Embed(source='assets/mam/images/local/checkbox_off.png');
+	selectedUpIcon:Embed(source='assets/mam/images/local/checkbox_on.png');
+	selectedOverIcon:Embed(source='assets/mam/images/local/checkbox_on.png');
+	selectedDownIcon:Embed(source='assets/mam/images/local/checkbox_off.png');
+	selectedDisabledIcon:Embed(source='assets/mam/images/local/checkbox_on.png');
+	font-weight: bold;
+	color: #57647C;
+	fontFamily: "dotum";
+	fontSize: 12px;
+}
+
+.mamRadioButton{
+    upIcon: Embed(source='assets/mam/images/local/r_check_off.png');
+	downIcon:Embed(source='assets/mam/images/local/r_check_on.png');
+	overIcon:Embed(source='assets/mam/images/local/r_check_off.png');
+	selectedUpIcon:Embed(source='assets/mam/images/local/r_check_on.png');
+	selectedOverIcon:Embed(source='assets/mam/images/local/r_check_on.png');
+	selectedDownIcon:Embed(source='assets/mam/images/local/r_check_off.png');
+	disabledIcon:Embed(source='assets/mam/images/local/r_check_off.png');
+	selectedDisabledIcon:Embed(source='assets/mam/images/local/r_check_off.png');
+    color : #57647C;
+    font-family : "dotum";
+    font-size : 12;
+    font-weight : "normal";
+}
+
+/* 버튼 스타일 */
+.mamButton {
+	
+	upSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	overSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	downSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	disabledSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedUpSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedOverSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedDownSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedDisabledSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	
+	cornerRadii: 0, 4, 4, 4;
+     borderColors: #395184, #566B9B;
+     overBorderColors: #003399, #003399;
+     selectedBorderColors: #54699B, #7382A4;
+     borderThickness: 1;
+     borderAlpha: 0.55;
+     fillColors: #6B88B5, #637EAD, #576E9F, #54699B;
+     fillAlphas: 1, 1, 1, 1;
+     fillColorRatios: 0, 10, 107, 255;
+     overFillColors: #54699B, #617BAA, #6C89B7, #A5B8D4;
+     overFillAlphas: 1, 1, 1, 0.85;
+     overFillColorRatios: 0, 129, 245, 255;
+     selectedFillColors: #748CB6, #3C5588, #314373, #2C3C69;
+     selectedFillAlphas: 0.7, 0.7, 1, 1;
+     selectedFillColorRatios: 0, 52, 170, 255;
+     highlightAlphas: 0.3, 0;
+     color: #FFFFFF;
+     disabled-color: #92AAD9;
+     textRollOverColor: #CBF1FC;
+     fontSize: 11;
+     paddingTop: 3; 
+     paddingLeft: 6; 
+     paddingRight: 6;
+	fontWeight: bold;
+	letter-spacing:-1px;
+}
+
+/* 최소화 버튼 스타일 */
+.mamMininumButton {
+	
+	upSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	overSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	downSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	disabledSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedUpSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedOverSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedDownSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	selectedDisabledSkin:ClassReference('assets.mam.skins.EnhancedButtonSkin');
+	
+	cornerRadii: 0, 4, 4, 4;
+     borderColors: #BC602B, #983C07;
+     overBorderColors: #003399, #003399;
+     selectedBorderColors: #54699B, #7382A4;
+     borderThickness: 1;
+     borderAlpha: 0.55;
+     fillColors: #F29661, #E0844F, #CE723D, #BC602B;
+     fillAlphas: 1, 1, 1, 1;
+     fillColorRatios: 0, 10, 107, 255;
+     overFillColors: #54699B, #617BAA, #6C89B7, #A5B8D4;
+     overFillAlphas: 1, 1, 1, 0.85;
+     overFillColorRatios: 0, 129, 245, 255;
+     selectedFillColors: #748CB6, #3C5588, #314373, #2C3C69;
+     selectedFillAlphas: 0.7, 0.7, 1, 1;
+     selectedFillColorRatios: 0, 52, 170, 255;
+     highlightAlphas: 0.3, 0;
+     color: #FFFFFF;
+     disabled-color: #92AAD9;
+     textRollOverColor: #CBF1FC;
+     fontSize: 11;
+     paddingTop: 3; 
+     paddingLeft: 6; 
+     paddingRight: 6;
+	fontWeight: bold;
+	letter-spacing:-1px;
+}
+
+/* 기본 DataGrid 스타일 */
+.mamDataGrid {
+	background-color:#ffffff;
+	border-color:#8f97a3;
+	border-style:solid;
+	border-sides:top bottom left right;
+	header-colors:#FFFFFF;
+	header-style-name: mamDataGridHeader;
+	
+	rollOverColor: #d8e7ff;
+	selected-fill-colors: #8BA0B6;
+	selectionColor: #8BA0B6;
+	
+	padding-top:3;
+	padding-bottom:0;
+	padding-left:0;
+	padding-right:0;
+	
+	color: #57647C;
+	text-selected-color:#FFFFFF;
+	text-roll-over-color:#57647C; 
+	
+	alternatingItemColors: #ffffff, #f7f7f7;
+	
+	font-family: "dotum";
+	font-size: 11;
+	
+	verticalGridLines: true;
+	horizontalGridLines: true;
+	
+	horizontal-grid-line-color:#dddddd;
+	vertical-grid-line-color: #CCCCCC;
+	
+	text-align:center;
+	vertical-gap: 0;
+	horizontal-gap: 0;
+}
+
+/* ====== AdvancedDataGrid Start ====== */
+.mamAdvancedDataGrid{ 
+	background-color:#ffffff;
+	border-color:#8f97a3;
+	border-style:solid;
+	border-sides:top bottom left right;
+	header-colors:#FFFFFF;
+	header-style-name: mamDataGridHeader;
+	
+	rollOverColor: #d8e7ff;
+	selection-color: #8BA0B6;
+	
+	padding-top:0; 
+	padding-bottom:0;
+	padding-left:0;
+	padding-right:0;
+	
+	color: #57647C;
+	text-selected-color:#57647C;
+	text-roll-over-color:#57647C;
+	alternating-item-colors: #ffffff, #f7f7f7;
+	
+	font-family: "dotum";
+	font-size: 11;
+	
+	verticalGridLines: true;
+	horizontalGridLines: true;
+	
+	horizontal-grid-line-color: #dddddd;
+	vertical-grid-line-color: #CCCCCC;
+	
+	text-align:center;
+	vertical-gap: 0;
+	horizontal-gap: 0;
+}
+
+
+/* DataGrid Header 스타일 */
+.mamDataGridHeader{
+	color:#FFFFFF;
+	font-weight: bold;
+	text-align:center;
+	font-size:11;
+	padding-left:0;
+	padding-right:0;
+	verticalGridLines: true;
+	vertical-align: middle;
+}
+
+/* ScrollBar 스타일 */
+.mamScrollBar{
+	track-colors: #8f94be, #e7e7f1;
+}
+
+/* 조회 버튼중 돋보기 지정 스타일 */
+.mamMagnifyButton{
+    disabledSkin : Embed(source="assets/mam/images/home/btn_search_result.png");
+    downSkin : Embed(source="assets/mam/images/home/btn_search_result.png");
+	upSkin : Embed(source="assets/mam/images/home/btn_search.png");
+	overSkin : Embed(source="assets/mam/images/home/btn_search_result.png"); 
+}
+
+/* 첨부파일 추가 Style */
+.mamAtchFileButton
+{ 
+	downSkin : Embed(source="assets/mam/images/local/btn_atch_file_down.png");
+	upSkin : Embed(source="assets/mam/images/local/btn_atch_file.png");
+	overSkin : Embed(source="assets/mam/images/local/btn_atch_file_over.png");
+}
+
+/* 첨부파일 삭제 Style */
+.mamAtchDelFileButton
+{
+	downSkin : Embed(source="assets/mam/images/local/btn_atch_del_file_down.png");
+	upSkin : Embed(source="assets/mam/images/local/btn_atch_del_file.png");
+	overSkin : Embed(source="assets/mam/images/local/btn_atch_del_file_over.png");
+}
+
+/* 첨부파일 다운 Style */
+.mamAtchDownFileButton
+{
+	downSkin : Embed(source="assets/mam/images/local/btn_atch_down_file_down.png");
+	upSkin : Embed(source="assets/mam/images/local/btn_atch_down_file.png");
+	overSkin : Embed(source="assets/mam/images/local/btn_atch_down_file_over.png");
+}
+
+/* 첨부파일 열기 Style */
+.mamAtchOpenFileButton
+{
+	downSkin : Embed(source="assets/mam/images/local/btn_atch_open_file_down.png");
+	upSkin : Embed(source="assets/mam/images/local/btn_atch_open_file.png");
+	overSkin : Embed(source="assets/mam/images/local/btn_atch_open_file_over.png");
+ 	
+}
+
+
+/* SearchTitle */
+.mamSearchTitle
+{
+	font-weight: bold;
+	color: #57647C;
+	fontFamily: "dotum";
+	fontSize: 12px;
+	textAlign: right;
+}
+
+/* TitleWindow */
+.mamTitleWindow{
+	border-style:solid;
+	border-color:#373C43;
+	border-thickness:3;
+	border-thickness-top:1;
+	background-color:#ffffff;
+	padding-top:10;
+	padding-bottom:3;
+	padding-left:3;
+	padding-right:3;
+	drop-shadow-enabled:false;
+	corner-radius:3;
+	header-height:30;
+	title-style-name: mamTitleWindowTitle;
+	header-colors:#545962,#3C444C;
+	title-background-skin: Embed(source="assets/mam/images/local/window_frame_top.png",scaleGridLeft="1",scaleGridTop="1",scaleGridRight="94",scaleGridBottom="28");
+	highlight-alphas:0,0;
+	controlBarStyleName: controlBar;
+	color: #57647C;
+	
+	closeButtonDisabledSkin: Embed(source="assets/mam/images/local/window_close_default.png");
+	closeButtonDownSkin: Embed(source="assets/mam/images/local/window_close_default.png");
+	closeButtonOverSkin: Embed(source="assets/mam/images/local/window_close_over.png");
+	closeButtonUpSkin: Embed(source="assets/mam/images/local/window_close_default.png");
+}
+
+.mamTitleWindowTitle{
+	font-size:12;
+	color:#FFFFFF;
+	font-weight:bold;
+	fontFamily : "dotum";
+}
+
+/* 팝업 닫기 버튼 */
+.mamTitleCloseButton{
+    disabledSkin : Embed(source="assets/mam/images/local/window_close_default.png");
+    downSkin : Embed(source="assets/mam/images/local/window_close_default.png");
+	upSkin : Embed(source="assets/mam/images/local/window_close_default.png");
+	overSkin : Embed(source="assets/mam/images/local/window_close_over.png"); 
+}
+
+/* 팝업 최소화 버튼 */
+.mamTitleMinimumButton{
+    disabledSkin : Embed(source="assets/mam/images/local/window_-_default.png");
+    downSkin : Embed(source="assets/mam/images/local/window_-_default.png");
+	upSkin : Embed(source="assets/mam/images/local/window_-_default.png");
+	overSkin : Embed(source="assets/mam/images/local/window_-_over.png"); 
+}
+
+
+	/*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	| 	Mam 레이아웃
+	|-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
+
+/*하단 박스*/
+.mamBottomBox{
+	verticalAlign: middle; 
+	horizontalAlign: right; 
+	horizontalGap: 5;
+	paddingTop: 10;
+	paddingBottom: 4;
+	paddingLeft: 0;
+	paddingRight: 0;
+}
+
+/*검색 박스*/
+.mamSearchBox{
+	verticalAlign: middle;
+	horizontalAlign: left;
+	horizontalGap: 20;
+	paddingTop: 10;
+	paddingBottom: 10;
+	paddingLeft: 15;
+	paddingRight: 15;
+	background-image: Embed(source='assets/mam/images/local/search_bg.png', 
+							scaleGridLeft=5, scaleGridRight=168, 
+							scaleGridTop=5, scaleGridBottom=25);
+}
+
+/*검색 박스 Sub*/
+.mamSearchBoxSub{
+	verticalAlign: middle; 
+	horizontalAlign: left; 
+	horizontalGap: 20;
+	paddingTop: 0;
+	paddingBottom: 0;
+	paddingLeft: 0;
+	paddingRight: 0;
+}
+
+/*상단 공통 정보 박스*/
+.mamSummaryBox{
+	verticalAlign: middle;
+	horizontalAlign: left;
+	horizontalGap: 20;
+	paddingTop: 10;
+	paddingBottom: 10;
+	paddingLeft: 15;
+	paddingRight: 15;
+	background-image: Embed(source='assets/mam/images/local/fix_data.png', 
+							scaleGridLeft=5, scaleGridRight=168, 
+							scaleGridTop=5, scaleGridBottom=25);
+}
+
+
+
+
